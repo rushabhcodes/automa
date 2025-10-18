@@ -1,17 +1,39 @@
-import { requireAuth } from "@/lib/auth-utils";
-import { caller } from "@/trpc/server";
+'use client';
 
-export default async function Home() {
-  await requireAuth();
-  const users = await caller.getUsers();
+import { Button } from "@/components/ui/button";
+
+import { useTRPC } from "@/trpc/client";
+
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+
+export default function Home() {
+
+  const trpc = useTRPC();
+  const { data } = useQuery(trpc.getWorkflows.queryOptions());
+
+  const create = useMutation(trpc.createWorkflow.mutationOptions({
+    onSuccess: () => {
+      toast.success("Workflow creation queued");
+    }
+  }));
+
   return (
     <div>
-      <h1>Users</h1>
+      <h1>Workflows</h1>
       <ul>
-        {users.map((user) => (
-          <li key={user.id}>{user.email}</li>
+        {data?.map((workflow) => (
+          <li key={workflow.id}>{workflow.name}</li>
         ))}
       </ul>
+      <Button
+        onClick={() => {
+          create.mutate();
+        }}
+        disabled={create.isPending}
+      >
+        Create Workflow
+      </Button>
     </div>
   );
 }
