@@ -1,7 +1,22 @@
+import { generateText } from 'ai';
+import { google } from '@ai-sdk/google';
 import { inngest } from '@/inngest/client';
 import { createTRPCRouter, protectedProcedure } from '../init';
 import prisma from '@/lib/db';
+
 export const appRouter = createTRPCRouter({
+
+    testAi: protectedProcedure
+        .mutation(async ({ ctx }) => {
+            await inngest.send({
+                name: 'automa/execute-ai',
+                data: {
+                    language: 'typescript',
+                }
+            });
+
+            return 'AI generation requested';
+        }),
 
     getWorkflows: protectedProcedure
         .query(({ ctx }) => {
