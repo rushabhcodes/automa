@@ -1,5 +1,10 @@
 import { caller } from "@/trpc/server";
 
+/**
+ * Renders the Users page by fetching user data and displaying each user's name in a list.
+ *
+ * @returns A JSX element for the page containing a heading and an unordered list of user names.
+ */
 export default async function Home() {
   const { users } = await caller.getUsers();
 
