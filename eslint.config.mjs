@@ -18,6 +18,8 @@ const eslintConfig = [
       "out/**",
       "build/**",
       "next-env.d.ts",
+      // Ignore generated code (e.g., Prisma Client & wasm bindings)
+      "src/generated/**",
     ],
   },
 ];
