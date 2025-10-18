@@ -18,6 +18,8 @@ export default function Home() {
     }
   }));
 
+  const testAi = useMutation(trpc.testAi.mutationOptions());
+
   return (
     <div>
       <h1>Workflows</h1>
@@ -34,6 +36,21 @@ export default function Home() {
       >
         Create Workflow
       </Button>
+
+      <div style={{ marginTop: 20 }}>
+        <h2>Test AI</h2>
+        <Button
+          onClick={() => {
+            testAi.mutate();
+          }}
+          disabled={testAi.isPending}
+        >
+          Generate Poem
+        </Button>
+        {testAi.data && (
+          <p style={{ marginTop: 10 }}>{testAi.data}</p>
+        )}
+      </div>
     </div>
   );
 }
