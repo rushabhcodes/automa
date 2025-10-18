@@ -169,7 +169,7 @@ export const RegisterForm = () => {
                                 )}
                             />
                             <Button type="submit" disabled={isPending}>
-                                {isPending ? "Logging in..." : "Sign Up"}
+                                {isPending ? "Signing up..." : "Sign Up"}
                             </Button>
                         </form>
                     </Form>
