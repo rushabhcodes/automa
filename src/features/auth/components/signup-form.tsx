@@ -55,7 +55,7 @@ export const RegisterForm = () => {
 
         authClient.signUp.email(
             {
-                name: data.email,
+                name: data.name,
                 email: data.email,
                 password: data.password,
                 callbackURL: "/",
