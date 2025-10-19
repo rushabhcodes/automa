@@ -11,3 +11,9 @@ export const prefetchWorkflows = (params?: Input) => {
         search: "",
     }));
 };
+
+export const prefetchWorkflow = (workflowId: string) => {
+    return prefetch(trpc.workflows.getOne.queryOptions({
+        workflowId,
+    }));
+}
