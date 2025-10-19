@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import { it } from "node:test";
+import { useHasActiveSubscription } from "@/features/subscriptions/hooks/use-sunscription";
 
 const menuItems = [
     {
@@ -35,6 +35,8 @@ export const AppSidebar = () => {
 
     const router = useRouter();
     const pathname = usePathname();
+    const { hasActiveSubscription, isLoading } = useHasActiveSubscription();
+
     return (
         <Sidebar collapsible="icon">
             <SidebarHeader>
@@ -76,20 +78,26 @@ export const AppSidebar = () => {
                 ))}
             </SidebarContent>
             <SidebarFooter>
-                <SidebarMenuItem>
-                    <SidebarMenuButton tooltip="Upgrade to Pro" isActive={false} asChild>
-                        <Link href="/upgrade" prefetch>
+                {!isLoading && !hasActiveSubscription && (
+                    <SidebarMenuItem>
+                        <SidebarMenuButton tooltip="Upgrade to Pro" isActive={false} onClick={
+                            () => authClient.checkout(
+                                { slug: "Automa-Pro" }
+                            )
+                        }>
+
                             <StarIcon className="mr-2 h-4 w-4" />
                             <span>Upgrade to Pro</span>
-                        </Link>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
+
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                )}
                 <SidebarMenuItem>
-                    <SidebarMenuButton tooltip="Billing Portal" isActive={false} asChild>
-                        <Link href="/billing" prefetch>
-                            <CreditCardIcon className="mr-2 h-4 w-4" />
-                            <span>Billing Portal</span>
-                        </Link>
+                    <SidebarMenuButton tooltip="Billing Portal" isActive={false} onClick={
+                        () => authClient.customer.portal()
+                    }>
+                        <CreditCardIcon className="mr-2 h-4 w-4" />
+                        <span>Billing Portal</span>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
