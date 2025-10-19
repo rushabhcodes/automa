@@ -7,7 +7,7 @@ import { Search } from "lucide-react";
 
 export const workflowsRouter = createTRPCRouter({
 
-    create: premiumProcedure
+    create: protectedProcedure
         .mutation(async ({ ctx }) => {
             const workflow = await prisma.workflow.create({
                 data: {
