@@ -65,7 +65,7 @@ export const EditorNameInput = ({ workflowId }: { workflowId: string }) => {
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === "Enter") {
             e.preventDefault();
-            handleSave();
+            inputRef.current?.blur(); // Blur to trigger onBlur instead of calling handleSave directly
         } else if (e.key === "Escape") {
             e.preventDefault();
             setName(workflow.name);
