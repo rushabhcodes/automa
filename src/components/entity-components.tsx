@@ -28,7 +28,7 @@ export const EntityHeader = ({
             <div>
                 <h1 className="text-2xl font-bold">{title}</h1>
                 {description && (
-                    <p className="text-xm md:text-sm text-muted-foreground">
+                    <p className="text-xs md:text-sm text-muted-foreground">
                         {description}
                     </p>
                 )}
