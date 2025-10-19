@@ -6,14 +6,13 @@ import { useUpgradeModal } from "@/hooks/use-upgrade-modal";
 import { useRouter } from "next/navigation";
 
 export const WorkflowsList = () => {
-    const workflows = useSuspenseWorkflows();
+    const { data: workflows } = useSuspenseWorkflows();
 
     return (
         <div className=" flex flex-col gap-4 justify-center items-center">
-            {workflows.data?.map((workflow) => (
+            {workflows?.map((workflow) => (
                 <div key={workflow.id}>{workflow.name}</div>
             ))}
-            hello world
         </div>
     );
 };
