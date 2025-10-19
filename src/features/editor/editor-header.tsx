@@ -54,7 +54,6 @@ export const EditorNameInput = ({ workflowId }: { workflowId: string }) => {
                 workflowId,
                 name,
             });
-            setIsEditing(false);
         } catch (error) {
             setName(workflow.name);
             console.error("Failed to update workflow name:", error);
