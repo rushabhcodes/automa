@@ -1,9 +1,8 @@
 import { generateSlug } from "random-word-slugs";
 import prisma from "@/lib/db";
-import { createTRPCRouter, premiumProcedure, protectedProcedure } from "@/trpc/init";
+import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import z from "zod";
 import { PAGINATION } from "@/config/constants";
-import { Search } from "lucide-react";
 
 export const workflowsRouter = createTRPCRouter({
 
@@ -61,7 +60,7 @@ export const workflowsRouter = createTRPCRouter({
             })
         )
         .query(async ({ ctx, input }) => {
-            const workflow = await prisma.workflow.findUnique({
+            const workflow = await prisma.workflow.findUniqueOrThrow({
                 where: {
                     id: input.workflowId,
                     userId: ctx.auth.user.id,
