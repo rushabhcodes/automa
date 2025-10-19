@@ -14,10 +14,9 @@ export const WorkflowsList = () => {
     const { data: workflows } = useSuspenseWorkflows();
 
     return <EntityList
-        items={workflows?.items}
-        renderItem={(workflow) => (
-            <WorkflowItem workflow={workflow} />
-        )}
+        items={workflows.items}
+        getKey={(w) => w.id}
+        renderItem={(workflow) => <WorkflowItem workflow={workflow} />}
         emptyView={<WorkflowsEmpty />}
     />
 };
