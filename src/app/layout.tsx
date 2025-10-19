@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, DM_Sans, IBM_Plex_Mono, Lora } from "next/font/google";
 import "./globals.css";
 import { TRPCReactProvider } from "@/trpc/client";
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
@@ -16,17 +17,19 @@ const geistMono = Geist_Mono({
 
 const dmSans = DM_Sans({
   variable: "--font-sans",
+  weight: ["400", "500", "700"],
   subsets: ["latin"],
 });
 
 const ibmPlexMono = IBM_Plex_Mono({
   variable: "--font-mono",
+  weight: ["400", "700"],
   subsets: ["latin"],
-  weight: "100"
 });
 
 const lora = Lora({
   variable: "--font-serif",
+  weight: ["400", "700"],
   subsets: ["latin"],
 });
 
@@ -51,7 +54,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${dmSans.variable} ${ibmPlexMono.variable} ${lora.variable} antialiased`}
       >
-        <TRPCReactProvider>{children}
+        <TRPCReactProvider>
+          <NuqsAdapter>{children}</NuqsAdapter>
           <Toaster />
         </TRPCReactProvider>
       </body>
