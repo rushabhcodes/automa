@@ -1,9 +1,11 @@
+import { Provider } from "jotai";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, DM_Sans, IBM_Plex_Mono, Lora } from "next/font/google";
-import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 import { TRPCReactProvider } from "@/trpc/client";
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
-import { Toaster } from "@/components/ui/sonner";
+import { Geist, Geist_Mono, DM_Sans, IBM_Plex_Mono, Lora } from "next/font/google";
+
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,7 +57,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${dmSans.variable} ${ibmPlexMono.variable} ${lora.variable} antialiased`}
       >
         <TRPCReactProvider>
-          <NuqsAdapter>{children}</NuqsAdapter>
+          <NuqsAdapter>
+            <Provider>
+              {children}
+            </Provider>
+          </NuqsAdapter>
           <Toaster />
         </TRPCReactProvider>
       </body>

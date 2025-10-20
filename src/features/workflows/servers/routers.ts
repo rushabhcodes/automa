@@ -62,6 +62,81 @@ export const workflowsRouter = createTRPCRouter({
             return workflow;
         }),
 
+        update: protectedProcedure
+        .input(
+            z.object({
+                workflowId: z.string(),
+                nodes: z.array(z.object({
+                    id: z.string(),
+                    type: z.string().nullish(),
+                    position: z.object({
+                        x: z.number(),
+                        y: z.number(),
+                    }),
+                    data: z.record(z.string(), z.any().optional()),
+                })),
+                edges: z.array(z.object({
+                    source: z.string(),
+                    target: z.string(),
+                    sourceHandle: z.string().nullish(),
+                    targetHandle: z.string().nullish(),
+                })),
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            const { workflowId, nodes, edges } = input;
+            const workflow = await prisma.workflow.findUniqueOrThrow({
+                where: {
+                    id: workflowId,
+                    userId: ctx.auth.user.id,
+                },
+            })
+            // Transact to update nodes and connections
+            await prisma.$transaction(async (prisma) => {
+                // Delete existing nodes and connections
+                await prisma.node.deleteMany({
+                    where: {
+                        workflowId: workflowId,
+                    },
+                });
+
+                // Create new nodes
+                await prisma.node.createMany({
+                    data: nodes.map((node) => ({
+                        id: node.id,
+                        workflowId: workflowId,
+                        name: node.type || "Unknown",
+                        type: node.type as NodeType,
+                        position: node.position,
+                        data: node.data || {},
+                    })),
+                });
+
+                // Create new connections
+                await prisma.connection.createMany({
+                    data: edges.map((edge) => ({
+                        workflowId: workflowId,
+                        fromNodeId: edge.source,
+                        toNodeId: edge.target,
+                        fromOutput: edge.sourceHandle || "main",
+                        toInput: edge.targetHandle || "main",
+                    })),
+                });
+
+                // Update workflow's updatedAt timestamp
+                await prisma.workflow.update({
+                    where: {
+                        id: workflowId,
+                    },
+                    data: {
+                        updatedAt: new Date(),
+                    },
+                });
+            });
+
+            return workflow;
+        }),
+
     getOne: protectedProcedure
         .input(
             z.object({
@@ -79,13 +154,26 @@ export const workflowsRouter = createTRPCRouter({
                     connections: true,
                 },
             });
-            // Transform workflow.nodes to xyflow react
-            const nodes: Node[] = workflow.nodes.map((node) => ({
-                id: node.id,
-                type: node.type,
-                position: node.position as { x: number; y: number },
-                data: { label: node.name },
-            }));
+            const toRecord = (value: unknown): Record<string, unknown> => {
+                if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+                    return value as Record<string, unknown>;
+                }
+                return {};
+            };
+
+            // Transform workflow.nodes to xyflow react while preserving stored node data
+            const nodes: Node[] = workflow.nodes.map((node) => {
+                const data = toRecord(node.data);
+                const labelValue = data["label"];
+                const hasLabel = typeof labelValue === "string";
+
+                return {
+                    id: node.id,
+                    type: node.type,
+                    position: node.position as { x: number; y: number },
+                    data: hasLabel ? data : { ...data, label: node.name },
+                };
+            });
             // Transform workflow.connections to xyflow react
             const edges: Edge[] = workflow.connections.map((connection) => ({
                 id: connection.id,
