@@ -1,4 +1,4 @@
-"use-client";
+"use client";
 
 import { NodeProps } from "@xyflow/react";
 import { memo } from "react";
