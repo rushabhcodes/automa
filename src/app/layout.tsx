@@ -1,9 +1,16 @@
-import { Provider } from "jotai";
 import type { Metadata } from "next";
+import {
+  DM_Sans,
+  Geist,
+  Geist_Mono,
+  IBM_Plex_Mono,
+  Lora,
+} from "next/font/google";
+import { Provider } from "jotai";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+
 import { Toaster } from "@/components/ui/sonner";
 import { TRPCReactProvider } from "@/trpc/client";
-import { NuqsAdapter } from 'nuqs/adapters/next/app'
-import { Geist, Geist_Mono, DM_Sans, IBM_Plex_Mono, Lora } from "next/font/google";
 
 import "./globals.css";
 
@@ -58,9 +65,7 @@ export default function RootLayout({
       >
         <TRPCReactProvider>
           <NuqsAdapter>
-            <Provider>
-              {children}
-            </Provider>
+            <Provider>{children}</Provider>
           </NuqsAdapter>
           <Toaster />
         </TRPCReactProvider>
