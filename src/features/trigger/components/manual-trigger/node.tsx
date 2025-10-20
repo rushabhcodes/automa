@@ -22,4 +22,4 @@ export const ManualTriggerNode = memo((props: NodeProps) => {
     )
 });
 
-ManualTriggerNode.displayName = "HttpRequestNode";
+ManualTriggerNode.displayName = "ManualTriggerNode";
