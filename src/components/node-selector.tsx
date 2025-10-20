@@ -30,7 +30,7 @@ const executionNodes: NodeTypeOption[] = [
     {
         type: NodeType.HTTP_REQUEST,
         label: "HTTP Request",
-        description: "Trigger workflow via HTTP request",
+        description: "Make an HTTP request",
         icon: GlobeIcon
     }
 ];
