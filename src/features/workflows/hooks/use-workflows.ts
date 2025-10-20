@@ -8,8 +8,8 @@ import { useWorkflowsParams } from "./use-workflows-params";
  */
 export const useSuspenseWorkflows = () => {
     const trpc = useTRPC();
-    const [paramas] = useWorkflowsParams();
-    return useSuspenseQuery(trpc.workflows.getMany.queryOptions(paramas));
+    const [params] = useWorkflowsParams();
+    return useSuspenseQuery(trpc.workflows.getMany.queryOptions(params));
 };
 
 /**

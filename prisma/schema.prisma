@@ -15,13 +15,13 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String     @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean    @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @default(now()) @updatedAt
   sessions      Session[]
   accounts      Account[]
   workflows     Workflow[]
@@ -76,12 +76,62 @@ model Verification {
 }
 
 model Workflow {
-  id        String   @id @default(cuid())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  id          String       @id @default(cuid())
+  name        String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
+  userId      String
+  nodes       Node[]
+  connections Connection[]
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@map("workflow")
+}
+
+enum NodeType {
+  INITIAL
+}
+
+model Node {
+  id                String       @id @default(cuid())
+
+  name              String
+  type              NodeType
+  data              Json         @default("{}")
+  position          Json
+
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @default(now()) @updatedAt
+
+  workflowId        String
+  workflow          Workflow     @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  outputConnections Connection[] @relation("FromNode")
+
+  inputConnections  Connection[] @relation("ToNode")
+
+  @@map("node")
+}
+
+model Connection {
+  id         String   @id @default(cuid())
+
+  fromNodeId String
+  fromNode   Node     @relation("FromNode", fields: [fromNodeId], references: [id], onDelete: Cascade)
+
+  toNodeId   String
+  toNode     Node     @relation("ToNode", fields: [toNodeId], references: [id], onDelete: Cascade)
+
+  fromOutput String   @default("main")
+  toInput    String   @default("main")
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  workflowId String
+  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@unique([fromNodeId, fromOutput, toNodeId, toInput])
+
+  @@map("connection")
 }
